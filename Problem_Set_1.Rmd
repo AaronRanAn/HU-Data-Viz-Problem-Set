@@ -1,0 +1,118 @@
+---
+title: "Problem Set - 1"
+author: "Aaron An"
+date: "September 15, 2016"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Directions
+
+During ANLY 512 we will be studying the theory and practice of *data visualization*.  We will be using `R` and the packages within `R` to assemble data and construct many different types of visualizations.  We begin by studying some of the theoretical aspects of visualization.  To do that we must appreciate the actual steps in the process of making a visualization.  
+
+Most of us use software to do this and have done so for so long that we have lost an appreciation for the mechanistic steps involved in accurately graphing data.  We will fix that this week by creating a series of analog (**meaning you draw them by hand**) graphics.  The visualizations you create must be numerically and visually accurate and precisely scaled.  Because of that the data sets we visualize will be small.  
+
+* A couple of tips, remember that there is preprocessing involved in many graphics so you may have to do summaries or calculations to prepare, those should be included in your work.
+
+* To ensure accuracy you should draft your graphic and their supporting calculations using graph paper.  
+
+The final product of your home work (this file) should include scanned or photographed images for each question below and be submitted via Moodle.  It is important that you name your file like this: `YourName-ANLY512-50-FALL-2016`.  File naming is crucial and failing to do so results in a deduction.
+
+```{r, include=FALSE}
+
+library(ggplot2)
+library(dplyr)
+library(plotly)
+
+```
+
+I ploted them by hands and then used `ggplot` to check if I did it correctly, so might as well documented them here too. 
+
+## Questions
+
+1. Find the `mtcars` data in R.  This is the dataset that you will use to create your graphics. Show a `summary` of the dataset.
+
+<br>
+
+```{r}
+
+mtcars %>% summary()
+
+```
+
+<br>
+
+2. Draw a bar graph, that shows the number of each `gear` type in `mtcars`.
+
+<br>
+
+```{r, fig.height=3, fig.width=5}
+
+mtcars %>% 
+    ggplot(aes(factor(gear))) + 
+    geom_bar(width = 0.4, fill = "#004D43", alpha = 0.8)
+
+```
+
+<br>
+
+![](/Users/aaronan/Desktop/img_1.png)
+
+3. Next show a stacked bar graph of the number of each `gear` type and how they are further divded out by `cyl`.
+
+<br>
+
+```{r, fig.height=3, fig.width=5}
+
+mtcars %>% 
+    ggplot(aes(factor(gear), fill = factor(cyl))) + 
+    geom_bar(width = 0.4) + scale_fill_brewer(palette = "Greens")
+
+```
+
+<br>
+
+![](/Users/aaronan/Desktop/img_2.png)
+
+
+4. Draw a scatter plot showing the relationship between `wt` and `mpg`.  
+
+<br>
+
+```{r, fig.height=3, fig.width=5}
+
+mtcars %>% 
+    ggplot(aes(wt, mpg)) + 
+    geom_point(colour = "#004D43", size = 2.5, alpha = 0.8)
+
+```
+
+<br>
+
+![](/Users/aaronan/Desktop/img_3.png)
+
+<br>
+
+5. Finally draw a pie chart showing the proportion of cars from the `mtcars` data set that have different `carb` values. 
+
+<br>
+
+```{r, fig.height=3, fig.width=5}
+
+mtcars %>% 
+    ggplot(aes(x = factor(1), fill = factor(carb))) +
+    geom_bar(width = 1) + 
+    coord_polar(theta = "y") + 
+     scale_fill_brewer(palette = "Greens")
+
+```
+
+
+<br>
+
+![](/Users/aaronan/Desktop/img_4.png)
+
