@@ -9,15 +9,27 @@ output:
 ```{r setup, include=FALSE}
 library(flexdashboard)
 library(tidyverse)
-library(magrittr)
-library(Matrix)
-library(lubridate)
-library(plotly)
+library(broom)
+
 ```
 
    
 Row
 -------------------------------------
+
+```{r}
+
+diamonds %>% 
+    filter(carat < 3) %>% 
+    lm(price ~ carat + clarity + cut + color + carat:clarity + carat:color + carat:cut, .) -> fit_1
+
+new_row = data.frame(carat =0.84,clarity="VS2", cut="Good", color="G")
+
+predict(fit_1, new_row)
+
+```
+
+
     
 ### Price & Carat
     
