@@ -19,7 +19,7 @@ library(plotly)
 Row
 -------------------------------------
     
-### Chart 1: Price & Carat
+### Price & Carat
     
 ```{r}
 
@@ -38,12 +38,11 @@ diamonds %>%
 ```{r}
 
 diamonds %>% 
-    ggplot(aes(cut, price)) + 
+    ggplot(aes(color, price)) + 
     geom_boxplot(outlier.shape = NA, width  = 0.5, alpha = 0.7, color="#4C4C4C", notch = T) + 
     coord_flip() + 
     geom_point(color = "#004D43", alpha = 0.2, size = 1) + 
-    ggtitle("Relationship between diamonds price and different cut") +
-    labs(x="Price",y="Cut")
+    labs(x="Color",y="Price")
 
 ```
 
@@ -60,8 +59,7 @@ diamonds %>%
     geom_boxplot(outlier.shape = NA, width  = 0.5, alpha = 0.7, color="#4C4C4C", notch = T) + 
     coord_flip() + 
     geom_point(color = "#004D43", alpha = 0.2, size = 1) + 
-    ggtitle("Relationship between diamonds price and different cut") +
-    labs(x="Price",y="Cut")
+    labs(x="Cut",y="Price")
 
 ```
     
@@ -70,12 +68,12 @@ diamonds %>%
 ```{r}
 
 diamonds %>% 
-    ggplot(aes(cut, price)) + 
+    ggplot(aes(clarity, price)) + 
     geom_boxplot(outlier.shape = NA, width  = 0.5, alpha = 0.7, color="#4C4C4C", notch = T) + 
     coord_flip() + 
     geom_point(color = "#004D43", alpha = 0.2, size = 1) + 
     ggtitle("Relationship between diamonds price and different cut") +
-    labs(x="Price",y="Cut")
+    labs(x="Clarity",y="Price")
 
 ```
 
