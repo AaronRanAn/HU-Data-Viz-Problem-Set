@@ -1,0 +1,17 @@
+---
+title: "Problem Set 7"
+author: "Aaron Ran An & Franny Hsiao"
+date: "10/22/2016"
+output: 
+  html_document: 
+    highlight: textmate
+    theme: cosmo
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+

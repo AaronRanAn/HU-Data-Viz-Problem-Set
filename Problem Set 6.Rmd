@@ -1,0 +1,125 @@
+---
+title: "Problem Set 6"
+subtitle: "Exploratory Data Analysis"
+author: "Your Name"
+date: "`r Sys.Date()`"
+output: 
+  html_document: 
+    highlight: textmate
+    theme: cosmo
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Objective
+
+The objective of this assignment is to familiarize your self with the process, specifically the visual process of Exploratory Data Analysis (EDA).  I have assigned several readings to support this work and layout an overall procedure.  You should read **Zuur et al.** prior to completing this work.
+
+
+## Directions
+
+Using any data set in `R`, for instance the `titatic` data set found within the `library(datasets)` package as your analysis data.  Conduct an EDA on the data set of your choice.  Your analysis should follow the "key steps" discussed in **Zuur et al.** and in our lecture discussion.  
+
+You analysis should be completed within an **Rmarkdown** document.  The assignment should show data import, and any data cleanup that you conduct.  The document should show the steps in your EDA including:
+
+- $\geq$ 5 statistical graphics.  
+- Each graphic should include plot titles, proper axis labels, and legend information, if neccesary.  
+- Along with each plot include a short statement indicating what you learned from that plot.  (This could be anything from verifying a `sort()` or `filter()` call to a `mosaic()` plot showing sample size variability).  
+
+The final document should be converted using the `knitr` package to an `.html` file and submitted via Moodle for evaluation.  Remember to properly name your file as: `YourName_ANLY512-50_Fall.html`.
+
+### Calling all the helpers
+
+```{r, message=FALSE, warning=FALSE}
+
+library(tidyverse)
+library(readr)
+library(readxl)
+library(knitr)
+library(magrittr)
+library(datasets)
+
+```
+
+For this analysis, I am going to explore the diamonds dataset with the ggplot 2 packages, which could be summarised by `glimpse()` 
+
+```{r}
+
+glimpse(diamonds)
+
+```
+
+### Plot 1: Dimond Carat Distribution
+
+```{r}
+
+diamonds %>% 
+    ggplot(aes(carat, fill = factor(cut))) + 
+    geom_density(alpha = 0.5) + 
+    ggtitle("Diamonds Carat Distribution by Cut") +
+    labs(x="Carat",y="Density") 
+
+```
+
+> There are clearly clusters in the carat distribution and most diamonds are under 3 carats
+
+
+### Plot 2: Relationship between Diamonds Carat and Price
+
+```{r}
+diamonds %>% 
+    filter(carat < 3) %>% 
+    ggplot(aes(x=carat, y=price)) + 
+    geom_point(alpha = 0.5, size = 2, color = "#004D43") + 
+    stat_smooth(method="lm") + 
+    ggtitle("Relationship between diamonds carat and price") +
+    labs(x="Carat",y="Price")
+```
+
+> There is a significant positive relationship btw diamonds carat and its price. 
+
+### Plot 3: Relationship between diamonds price and cut. 
+
+```{r}
+
+diamonds %>% 
+    ggplot(aes(cut, price)) + 
+    geom_boxplot(outlier.shape = NA, width  = 0.5, alpha = 0.7, color="#4C4C4C", notch = T) + 
+    coord_flip() + 
+    geom_point(color = "#004D43", alpha = 0.2, size = 1) + 
+    ggtitle("Relationship between diamonds price and different cut") +
+    labs(x="Price",y="Cut")
+
+```
+
+> Premium cut seems to have highest median price
+
+### Plot 4: Relationship between cut and color 
+
+```{r}
+diamonds %>% 
+  count(color, cut) %>%  
+  ggplot(mapping = aes(x = color, y = cut)) +
+    geom_tile(mapping = aes(fill = n)) + 
+    ggtitle("Relationship between diamonds color and different cut") +
+    labs(x="Color",y="Cut")
+```
+
+> ideal cut and color G is most common
+
+### Plot 5: Relationship between Diamond Depth and Price
+
+```{r}
+diamonds %>% 
+    filter(carat < 3) %>% 
+    ggplot(aes(x=factor(clarity), y=price)) + 
+    geom_bin2d() +
+    ggtitle("Relationship between diamonds clarity and price") +
+    labs(x="Clarity",y="Price")
+```
+
+> Most common clarity combination is under $2000 with VS2 clarity
+
+

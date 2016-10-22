@@ -1,0 +1,107 @@
+---
+title: "Problem_Set_4"
+author: "Aaron"
+date: "September 29, 2016"
+output: 
+  html_document: 
+    highlight: textmate
+    theme: cosmo
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Objective
+
+The objective of this assignment is two fold.  First you are required to read and summarize the key aspects of both readings *Cleveland and McGill 1985* and *Heer and Bostock 2010*.  This summary should explore the similarities and differences in both studies approaches and in their findings.  
+
+To link what you learned from the perception research to your own graphics the second objective will be create and evaluate your own graphics.  To do this create 4 different Vis idioms (line, bar, pie, tree...etc) using the data from `library(nycflights13)` and the `ggplot2` package.  For each Vis that you create explain the graphic
+
+1. Its core task (what you want to show)
+2. Which graphical primitive is being assessed to understand this graphic and why did you choose each idiom used.
+
+0. Example -- Here is an example that shows NOT ONLY THE ANSWER but also my process.
+
+The task of this graphic was to evaluate the average delay time of flights in and out of NYC.  I was curious if there was a strong variability across months due the seasonality of weather in the northeast.
+
+```{r}
+library(lubridate)
+
+ymd("2016-02-24")+100
+```
+
+
+
+```{r}
+# setup
+library(dplyr)
+library(ggplot2)
+library(nycflights13)
+
+# Load the data (abbreviate name for ease)
+dat <- flights
+
+# Manipulate data in prep for graphic
+dat2 <- flights %>%
+  select(month, dep_delay) %>%
+  group_by(month) %>%
+  summarise(delay = mean(dep_delay, na.rm = TRUE)) %>%
+  as.data.frame()
+
+# Create vis
+ggplot(dat2, aes(factor(month),delay)) + 
+  geom_bar(stat= "identity") +
+  xlab("Month") + ylab("Average Flight Delay (minutes)") +
+  ggtitle("Annual Variability in NYC Flight Delays") +
+  ggthemes::theme_tufte()
+
+```
+
+In this version I attempt to look at departure delay without summarizing the data, but rather looking at a smooth of the data across 2013. To use a bivariate approach I must treat `month` as a continuous variable.
+
+```{r}
+# Manipulate data in prep for graphic
+dat3 <- flights %>%
+  sample_n(1000) %>%               # This dataset is large so I take a random sample
+  select(month, dep_delay) %>%
+  as.data.frame()
+
+# Create vis
+ggplot(dat3, aes(month,dep_delay)) + 
+  geom_point(na.rm = TRUE) +
+  geom_smooth(na.rm = TRUE) +
+  xlab("Month") + ylab("Flight Delay (minutes)") +
+  ggtitle("Annual Variability in NYC Flight Delays")
+```
+
+
+But it due to the delay time range I can not really visualize the variability over time. I will try to correct that by eliminating the `geom_points()`
+
+```{r}
+# Create vis
+ggplot(dat3, aes(month,dep_delay)) + 
+  #geom_point(na.rm = TRUE) +
+  geom_smooth(na.rm = TRUE) +
+  xlab("Month") + ylab("Flight Delay (minutes)") +
+  ggtitle("Annual Variability in NYC Flight Delays")
+```
+
+Finally one more option to allow me to look at the raw data variability but not treat month as a continuous variable.  
+
+```{r}
+# Create vis
+ggplot(dat3, aes(factor(month),dep_delay)) + 
+  geom_boxplot() +
+  xlab("Month") + ylab("Flight Delay (minutes)") +
+  ylim(-10, 100) +
+  ggtitle("Annual Variability in NYC Flight Delays")
+```
+
+Finally, the graphical primative that I am applying in each of these examples is *position along a common scale*.  In my opinion the sheer size of this data makes it difficult to visualize the average differences between months without using a summary statistical approach.  Given that caveat I think the most effective way to visualize mean departure delay by month was in my first graphic using a bar chart approach.  I added a Tufte-ian theme to improve overall aesthetics using the package `ggthemes`
+
+
+1. Add yours here
+2. Add yours here
+3. Add yours here
+4. Add yours here

@@ -1,0 +1,171 @@
+---
+title: "Problem Set 3"
+author: "Aaron"
+date: "`r Sys.Date()`"
+output: 
+  html_document: 
+    highlight: haddock
+    theme: cosmo
+---
+
+## Objectives
+
+The objectives of this problem set is to gain experience working with data visualization as a tool for understanding unfamiliar data. To do this I want you to submit four *vis* that reveal something interesting about either the included `movies.csv` dataset.  For each *vis*, include the code you used to create the plot (`echo=TRUE`), and a one paragraph description of what you found interesting.  In most analyses the first plot you try will not be the most informative and you will need to make multiple improvements to get a polished plot. To show this process, for one of your 4 *vis*, provide 3-5 iterations that lead you to the final plot.  
+
+Finally, upon completion name your final `.Rmd` file as: `YourName_PS2_ANLY512_SU2016.Rmd` and upload the link to the file from your GitHub repository to the "Problem Set 2"" assignmenet on Moodle.
+
+
+## My Example
+
+Below is my example for a multi-part question.  I have also included an example of loading the data based on requests in last weeks class.  I will provide the `movie_data.csv` check Moodle.  Add your response in a similar fashion and submit following the directions above.
+
+### Data Import & Cleanup
+
+```{r, message=FALSE, warning=FALSE}
+
+library(tidyverse)
+library(magrittr)
+library(stringr)
+
+movie <- read.csv("../data/movie_data.csv")  # import the csv
+
+```
+
+There is a lot to clean up on this data. 
+
+```{r, warning=FALSE}
+
+# set all column names to lower cases
+
+movie %>% 
+    transmute(id = id,
+              title = as.character(Title),
+              release_year = released, 
+              dom_box = as.numeric(Domestic), 
+              int_box = as.numeric(International), 
+              wld_box = as.numeric(Worldwide), 
+              title_type = Title.type, 
+              director = Directors, 
+              avg_rating = AVG.rating, 
+              imdb_rating = IMDb.Rating, 
+              imdb_vote = X..of.IMDb.votes,
+              rttm_rating = ifelse(Rotten.Tom. == "n/a", NA, as.numeric(as.character(Rotten.Tom.))),
+              metc_rating = ifelse(Metacritic == "n/a", NA, as.numeric(as.character(Metacritic))), 
+              runtime = Runtime..mins.,
+              year = Year, 
+              genres = Genres
+              ) %>% 
+    filter(title_type == "Feature Film") -> movie_f 
+
+```
+
+check structure of the data:
+
+```{r}
+
+str(movie_f)
+
+```
+
+
+### Multi-step Visualization
+
+In my example, I want to look at different rating sites and their ratings, each plot would tend to answer one question. 
+
+#### Plot 1:
+
+> Does more IMDB votes correlates with higher IMDB ratings? 
+
+Self reported movie rating is a very subjective activity, thus I am interested to explore the relationship between # of votes and its rating, since IMDB has most complete rating, I will use this. 
+
+```{r}
+
+movie_f %>% 
+    ggplot(aes(imdb_vote, imdb_rating)) + 
+    geom_point()
+
+```
+
+**Iteration**
+
+It seems there should be a slightly positive correlation there, but let find out for sure by fitting a `lm` smooth line. 
+
+```{r}
+
+movie_f %>% 
+    ggplot(aes(imdb_vote, imdb_rating)) + 
+    geom_point() + 
+    geom_smooth()
+
+```
+
+This is more clear, there is a slightly positive relationship between number of vote and rating. It could be because people vote tends to come to vote for good movies than bad ones, intuitively. 
+
+Now, let's make it prettier by using Harrisburg U's color and change alpha. 
+
+```{r}
+
+movie_f %>% 
+    ggplot(aes(imdb_vote, imdb_rating)) + 
+    geom_point(colour = "#004D43", size = 2, alpha = 0.6) + 
+    geom_smooth()
+
+```
+
+#### Plot 2: Is drama rated (IMDB) better than comedy? 
+
+```{r}
+
+movie_f %>% 
+    mutate(tgt_genres = ifelse(!str_detect(movie_f$genres, "comedy")&str_detect(movie_f$genres, "drama"), "drama only",
+                               ifelse(str_detect(movie_f$genres, "comedy")&!str_detect(movie_f$genres, "drama"), "comedy only",
+                               ifelse(str_detect(movie_f$genres, "comedy")&str_detect(movie_f$genres, "drama"), "both", "neither")))
+           ) %>% 
+    filter(tgt_genres %in% c("drama only", "comedy only", "both")) %>% 
+    ggplot(aes(factor(tgt_genres), imdb_rating)) + 
+    geom_boxplot()
+
+```
+
+Apprently dramas are rated better than comedy, even the interaction of drama and comedy would give the better a slightly better rating than just comedy. 
+
+#### Plot 3:
+
+> is the rating skewed for the most productive five years?
+
+```{r}
+
+movie_f %>% 
+    filter(year %in% c(2002, 2009, 2004, 2003)) %>% 
+    ggplot(aes(x=imdb_rating, colour = factor(year), group = factor(year))) + 
+    geom_density()
+
+```
+
+Those productive years' rating are very similar around 7, with year 2009's rating more condensed. 
+
+#### Plot 4: 
+
+> how about combine plot 2 and 3 to look at yearly rating distribution by genres? 
+
+```{r}
+
+movie_f %>% 
+    mutate(tgt_genres = ifelse(!str_detect(movie_f$genres, "comedy")&str_detect(movie_f$genres, "drama"), "drama only",
+                               ifelse(str_detect(movie_f$genres, "comedy")&!str_detect(movie_f$genres, "drama"), "comedy only",
+                               ifelse(str_detect(movie_f$genres, "comedy")&str_detect(movie_f$genres, "drama"), "both", "neither")))
+           ) %>% 
+    filter(tgt_genres %in% c("drama only", "comedy only", "both"), 
+           year %in% c(2002, 2009, 2004, 2003)) %>% 
+    ggplot(aes(x=imdb_rating, colour = factor(year), group = factor(year))) + 
+    geom_density() +
+    facet_grid(tgt_genres ~ .)
+
+```
+
+
+### Summary
+
+1. People tends to vote more for good movies than bad ones. 
+2. Drama is generally better rated than commedy
+3. Ratings are fairly stable in a 5 year window. 
