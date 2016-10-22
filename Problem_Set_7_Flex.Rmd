@@ -4,14 +4,49 @@ output:
   flexdashboard::flex_dashboard:
     orientation: rows
     vertical_layout: fill
+runtime: shiny
 ---
 
 ```{r setup, include=FALSE}
 library(flexdashboard)
 library(tidyverse)
 library(broom)
+library(shiny)
 
 ```
+
+Inputs {.sidebar}
+-----------------------------------------------------------------------
+
+Select the quality of the diamonds you want
+
+```{r}
+ selectInput("carat", label = h3("Carat"), 
+    choices = list("1.0" = 1, "1.5" = 1.5, "2.0" = 2, "2.5" = 2.5), 
+    selected = 1)
+
+selectInput("clarity", label = h3("Clarity"), 
+    choices = list("SI1" = "SI1", "VS2" = "VS2", "SI2" = "SI2",
+                   "VS1" = "VS1", "VVS2" = "VVS2", "VVS1"="VVS1"), 
+    selected = "SI1")
+
+selectInput("cut", label = h3("Cut"), 
+    choices = list("Fair" = "Fair", "Good" = "Good", "Very Good" = "Very Good",
+                   "Premium" = "Premium", "Ideal" = "Ideal"), 
+    selected = "Good")
+
+selectInput("color", label = h3("Color"), 
+    choices = list("D" = "D", "E" = "E", "F" = "F", "G" = "G", "H" = "H", 
+                   "I" = "I", "J" = "J"), 
+    selected = "E")
+
+
+
+
+
+```
+
+
 
    
 Row
@@ -25,7 +60,7 @@ diamonds %>%
 
 new_row = data.frame(carat =0.84,clarity="VS2", cut="Good", color="G")
 
-predict(fit_1, new_row)
+# predict(fit_1, new_row)
 
 ```
 
