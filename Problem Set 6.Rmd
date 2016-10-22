@@ -122,4 +122,23 @@ diamonds %>%
 
 > Most common clarity combination is under $2000 with VS2 clarity
 
+```{r}
+
+diamonds %>% 
+    filter(carat < 3.0) %>% 
+    ggplot() +
+    geom_hex(mapping = aes(x = carat, y = price)) + 
+    stat_smooth(method = "lm") -> g1
+
+diamonds %>% 
+    filter(carat < 3) %>% 
+    ggplot(aes(x=carat, y=price)) + 
+    geom_point(alpha = 0.5, size = 2, color = "#004D43") + 
+    stat_smooth(method="lm") + 
+    ggtitle("Relationship between diamonds carat and price") +
+    labs(x="Carat",y="Price") -> g2
+
+ggplotly(g2)
+
+```
 

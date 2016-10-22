@@ -41,12 +41,13 @@ selectInput("color", label = h3("Color"),
     selected = "E")
 
 
-
-
+# clarity <- reactive(input$clarity)
+# cut <- reactive(input$cut)
+# color <- reactive(input$color)
 
 ```
 
-
+Predict your diamond's price: (TBD)
 
    
 Row
