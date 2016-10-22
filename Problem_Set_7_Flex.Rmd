@@ -1,0 +1,81 @@
+---
+title: "Problem Set 7 - Dash"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(tidyverse)
+library(magrittr)
+library(Matrix)
+library(lubridate)
+library(plotly)
+```
+
+   
+Row
+-------------------------------------
+    
+### Chart 1: Price & Carat
+    
+```{r}
+
+diamonds %>% 
+    filter(carat < 3) %>% 
+    ggplot(aes(x=carat, y=price)) + 
+    geom_point(alpha = 0.5, size = 2, color = "#004D43") + 
+    stat_smooth(method="lm") + 
+    ggtitle("Relationship between diamonds carat and price") +
+    labs(x="Carat",y="Price")
+
+```
+   
+### Chart 2: Price & Cut
+
+```{r}
+
+diamonds %>% 
+    ggplot(aes(cut, price)) + 
+    geom_boxplot(outlier.shape = NA, width  = 0.5, alpha = 0.7, color="#4C4C4C", notch = T) + 
+    coord_flip() + 
+    geom_point(color = "#004D43", alpha = 0.2, size = 1) + 
+    ggtitle("Relationship between diamonds price and different cut") +
+    labs(x="Price",y="Cut")
+
+```
+
+   
+Row
+-------------------------------------
+    
+### Chart 2: Price & Clarity
+    
+```{r}
+
+diamonds %>% 
+    ggplot(aes(cut, price)) + 
+    geom_boxplot(outlier.shape = NA, width  = 0.5, alpha = 0.7, color="#4C4C4C", notch = T) + 
+    coord_flip() + 
+    geom_point(color = "#004D43", alpha = 0.2, size = 1) + 
+    ggtitle("Relationship between diamonds price and different cut") +
+    labs(x="Price",y="Cut")
+
+```
+    
+### Chart 3
+
+```{r}
+
+diamonds %>% 
+    ggplot(aes(cut, price)) + 
+    geom_boxplot(outlier.shape = NA, width  = 0.5, alpha = 0.7, color="#4C4C4C", notch = T) + 
+    coord_flip() + 
+    geom_point(color = "#004D43", alpha = 0.2, size = 1) + 
+    ggtitle("Relationship between diamonds price and different cut") +
+    labs(x="Price",y="Cut")
+
+```
+
